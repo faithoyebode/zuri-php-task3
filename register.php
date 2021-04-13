@@ -1,28 +1,23 @@
 <?php include_once('lib/header.php');
 
 //If the user is logged in, and  is not trying to add another user as a super admin
-if(isset($_SESSION['loggedIn']) && !isset($_SESSION['addUser'])){
+if(isset($_SESSION['loggedIn'])){
     //redirect to dashboard
     header("Location: dashboards/dashboard.php");
 }
 ?>  <!-- page title -->
-    <p class="pt-5"><strong><?php 
-            //If the superadmin is trying to add another user, The title of the page will be add user
-            // Else it will be "Welcome, Please Register"
-            if(isset($_SESSION['addUser'])){
-                echo "Add User";
-            }else{
-                echo "Welcome, Please Register";
-            }?>
-        </strong></p>
+    <p class="pt-5">
+        <strong> Welcome, Please Register </strong>
+    </p>
+
     <p>All fields are required </p>
 
    <!-- page form field --> 
     <form method="POST" action="processes/processregister.php" class="w-50">
         <p>
             <?php
-                if(isset($_SESSION['error']) && !empty($_SESSION['error'])){
-                    echo "<span style='color:red'>" . $_SESSION['error'] . "</span>";
+                if(isset($_SESSION['registerError']) && !empty($_SESSION['registerError'])){
+                    echo "<span style='color:red'>" . $_SESSION['registerError'] . "</span>";
                 }
             ?>
         </p>
@@ -39,7 +34,7 @@ if(isset($_SESSION['loggedIn']) && !isset($_SESSION['addUser'])){
                    echo "value=" . $_SESSION['first_name'];
                 }
             ?>
-            type="text" name="first_name" placeholder="First Name" class="form-control mt-n1"/>
+            type="text" name="first_name" placeholder="First Name" class="form-control mt-n1" required />
             <p>
                 <?php
                     if(isset($_SESSION['noNumber'])){
@@ -75,7 +70,7 @@ if(isset($_SESSION['loggedIn']) && !isset($_SESSION['addUser'])){
                    echo "value=" . $_SESSION['last_name'];
                 }
             ?>
-            type="text" name="last_name" placeholder="Last Name" class="form-control mt-n1"/>
+            type="text" name="last_name" placeholder="Last Name" class="form-control mt-n1" required />
         </p>
         <p>
                 <?php
@@ -112,7 +107,7 @@ if(isset($_SESSION['loggedIn']) && !isset($_SESSION['addUser'])){
                    echo "value=" . $_SESSION['email'];
                 }
             ?>
-            type="text" name="email" placeholder="Email"/ autocomplete="off" class="form-control mt-n1">
+            type="text" name="email" placeholder="Email" autocomplete="off" class="form-control mt-n1" rquired >
             <p>
                 <?php
                     if(isset($_SESSION['invalidMail'])){
@@ -174,56 +169,13 @@ if(isset($_SESSION['loggedIn']) && !isset($_SESSION['addUser'])){
                 }
                 ?>>Male</option>
             </select>
-        <p class="form-group">
-            <label>Designation</label><br />
-            <select name="designation" class="form-control mt-n1">
-                <option value="">Select One</option>
-                <option
-                <?php
-                if(isset($_SESSION['designation']) && $_SESSION['designation'] == 'Medical Team (MT)'){
-                   echo "selected";
-                }
-                ?>
-                >Medical Team (MT)</option>
-                <option
-                <?php
-                if(isset($_SESSION['designation']) && $_SESSION['designation'] == 'Patients'){
-                   echo "selected";
-                }
-                ?>
-                >Patients</option>
-                <option
-                <?php
-                if(isset($_SESSION['designation']) && $_SESSION['designation'] == 'Super Admin'){
-                   echo "selected";
-                }
-                ?>
-                >Super Admin</option>
-            </select>
-        </p>
-        <p class="form-group">
-            <label>Department</label><br />
-            <input 
-            <?php
-                if(isset($_SESSION['department'])){
-                   echo "value=" . $_SESSION['department'];
-                }
-            ?>
-            type="text" name="department" placeholder="Department" class="form-control mt-n1"/>
-        </p>
+        
         <p>
-            <button type="submit" class="form-control btn btn-danger"><?php if(isset($_SESSION['addUser'])){
-                echo "Add User";
-            }else{
-                echo "Register";
-            }?>
-            </button>
+            <button type="submit" class="form-control btn btn-danger">Register</button>
         </p>
     </form>
 
-<?php include_once('lib/footer.php');
-if(isset($_SESSION['loggedIn']) && !isset($_SESSION['addUser'])){
-    session_unset();
-    session_destroy();
-} 
+<?php 
+    include_once('lib/footer.php');
+    unset($_SESSION['registerError']);
 ?>

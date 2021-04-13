@@ -1,9 +1,6 @@
 <?php include_once('lib/header.php'); 
-if(isset($_SESSION['loggedIn']) && isset($_SESSION['addUser'])){
-    //redirect to dashboard
-    header("Location: register.php");
-}elseif(isset($_SESSION['loggedIn']) && !isset($_SESSION['addUser'])){
-    header("Location: dashboards/dashboard.php");
+if(isset($_SESSION['loggedIn'])){
+    header("Location: dashboard.php");
 }
 ?>
 <h3 class="pt-5">Login</h3>
@@ -24,24 +21,22 @@ if(isset($_SESSION['loggedIn']) && isset($_SESSION['addUser'])){
         unset($_SESSION['mustHave']);
         unset($_SESSION['department']);
         unset($_SESSION['gender']);
-        unset($_SESSION['designation']);
-        unset($_SESSION['department']);
     ?>
-    <!--<p>
-        //<?php
+    <p>
+        <?php
         
-           // if(isset($_SESSION['message'])){
-           //     echo "<span style='color:red'>" . $_SESSION['message'] . "</span>";
+           if(isset($_SESSION['regToLoginMessage'])){
+                echo "<span style='color:red'>" . $_SESSION['regToLoginMessage'] . "</span>";
                     
-             //   }
-        //?>
-    </p>-->
+            }
+        ?>
+    </p>
      
     <form method="POST" action="processes/processlogin.php" class="w-50">
         <p>
             <?php
-                if(isset($_SESSION['error']) && !empty($_SESSION['error'])){
-                    echo "<span style='color:red'>" . $_SESSION['error'] . "</span>";
+                if(isset($_SESSION['loginError']) && !empty($_SESSION['loginError'])){
+                    echo "<span style='color:red'>" . $_SESSION['loginError'] . "</span>";
                 }
             ?>
         </p>
@@ -61,11 +56,11 @@ if(isset($_SESSION['loggedIn']) && isset($_SESSION['addUser'])){
                    echo "value=" . $_SESSION['email'];
                 }
             ?>
-            type="text" name="email" placeholder="Email" class="form-control"/>
+            type="text" name="email" placeholder="Email" class="form-control" required>
         </p>
         <p class="form-group">
             <label>Password</label><br />
-            <input type="password" name="password" placeholder="Password" class="form-control"/>
+            <input type="password" name="password" placeholder="Password" class="form-control" required>
         </p>
         
         <p>
@@ -73,4 +68,8 @@ if(isset($_SESSION['loggedIn']) && isset($_SESSION['addUser'])){
         </p>
     </form>
 
-<?php include_once('lib/footer.php'); ?>
+<?php 
+    include_once('lib/footer.php'); 
+    unset($_SESSION['regToLoginMessage']);
+    unset($_SESSION['loginError']);
+?>

@@ -1,15 +1,7 @@
  <?php session_start(); 
     //collecting data
     $errorCount = 0;
-
-    /*$first_name = $_POST['first_name'] != "" ? $_POST['first_name'] : $errorCount++;
-    $last_name = $_POST['last_name'] != "" ? $_POST['last_name'] : $errorCount++;
-    $email = $_POST['email'] != "" ? $_POST['email'] : $errorCount++;
-    $password = $_POST['password'] != "" ? $_POST['password'] : $errorCount++;
-    $gender = $_POST['gender'] != "" ? $_POST['gender'] : $errorCount++;
-    $designation = $_POST['designation'] != "" ? $_POST['designation'] : $errorCount++;
-    $department = $_POST['department'] != "" ? $_POST['department'] : $errorCount++;
-    */
+    
     //Assigning variables to the various form inputs
     // the errorcount variable deals with the number of blank spaces in the form
     if($_POST['first_name'] != ""){
@@ -37,16 +29,7 @@
     }else{
         $errorCount++;
     }
-    if(!empty($_POST['designation'])){
-        $designation = $_POST['designation'];
-    }else{
-        $errorCount++;
-    }
-    if($_POST['department'] != ""){
-        $department = $_POST['department'];
-    }else{
-        $errorCount++;
-    }
+    
 
     //assigning session variables to the form inputs
     $_SESSION['first_name'] = $first_name; 
@@ -54,8 +37,6 @@
     $_SESSION['email'] = $email; 
     $_SESSION['password'] = $password; 
     $_SESSION['gender'] = $gender; 
-    $_SESSION['designation'] = $designation; 
-    $_SESSION['department'] = $department;
     $nameErrorMsg = []; 
 
     //if any of the input is blank, execute this code
@@ -66,8 +47,8 @@
         }
         $session_error .= " in your form submission";
         //error message (no of blank spaces) is assigned to the session-error variable;
-        //the remaining code in this if block also check for other errors associated with each user input
-        $_SESSION["error"] = $session_error;
+        //the remaining code in these "if" blocks also check for other errors associated with each user input
+        $_SESSION["registerError"] = $session_error;
         if ($_POST['first_name'] == "" ){
             $nameErrorMsg['blank'] = "Name cannot be blank";
             $_SESSION['blankName'] = $nameErrorMsg['blank'];
@@ -200,17 +181,14 @@
         //execute this part when there are no errors in the input
         $allUsers = scandir("../db/users/");
         $countAllUsers = count($allUsers);
-        $newUserId = ($countAllUsers-2) + 1;
+        $newUserId = ($countAllUsers - 2) + 1;
         $userObject= [
             'id'=>$newUserId,
             'first_name'=>$first_name,
             'last_name'=>$last_name,
             'email'=>$email,
             'password'=>password_hash($password,PASSWORD_DEFAULT),
-            'gender'=>$gender,
-            'designation'=>$designation,
-            'department'=>$department                                                                                                                                                                                                                
-
+            'gender'=>$gender                                                                                                                                                                                                              
         ];
         
         //this section checks if the email the user is using to register is existing on the database
@@ -218,7 +196,7 @@
         for ($counter=0; $counter < $countAllUsers; $counter++){
             $currentUser = $allUsers[$counter];
             if($currentUser == $email . ".json"){
-                $_SESSION['error'] = "Registration failed, User already exist" ;
+                $_SESSION['registerError'] = "Registration failed, User already exist" ;
                 header("Location: ../register.php");
                 die();
 
@@ -227,15 +205,11 @@
 
         //If everything is fine, the user records are saved in the database
         file_put_contents("../db/users/" . $email . ".json", json_encode($userObject));
-        $_SESSION['message'] = "Registration Successful, you can now login! " . $first_name ;
-        //If the admin was the one trying to add a user, the admin is redirected back to his page 
-        if(isset($_SESSION['loggedIn']) && isset($_SESSION['addUser'])){
-            $_SESSION['UserAdded'] = true;
-            header("Location: ../dashboards/sup-dashboard.php");
-        }else{
-            header("Location: ../login.php");
-        }
-    }
+        $_SESSION['regToLoginMessage'] = "Registration Successful, you can now login! " . $first_name ;
+       
+        //redirect the user to login page when registration is successful
+        header("Location: ../login.php");
+}
     
 
 
