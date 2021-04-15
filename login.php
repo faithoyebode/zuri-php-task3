@@ -29,6 +29,10 @@ if(isset($_SESSION['loggedIn'])){
                 echo "<span style='color:red'>" . $_SESSION['regToLoginMessage'] . "</span>";
                     
             }
+            if(isset($_SESSION['resetToLoginMessage'])){
+                echo "<span style='color:red'>" . $_SESSION['resetToLoginMessage'] . "</span>";
+                    
+            }
         ?>
     </p>
      
@@ -71,5 +75,6 @@ if(isset($_SESSION['loggedIn'])){
 <?php 
     include_once('lib/footer.php'); 
     unset($_SESSION['regToLoginMessage']);
+    unset($_SESSION['resetToLoginMessage']);
     unset($_SESSION['loginError']);
 ?>

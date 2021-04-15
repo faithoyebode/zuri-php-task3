@@ -11,34 +11,36 @@
     <form action="processes/processreset.php" method="POST" class="w-50">
         <p>
             <?php
-                // if(isset($_SESSION['resetError']) && !empty($_SESSION['resetError'])){
-                //     echo "<span style='color:red'>" . $_SESSION['error'] . "</span>";
-                //     #session unset
-                //    session_destroy();
-                // }
+                if(isset($_SESSION["resetError"]) && !empty($_SESSION["resetError"])){
+                    echo "<span style='color:red'>" . $_SESSION["resetError"] . "</span>";
+                }
             ?>
         </p>
-        <!-- <input 
-            <?php 
-            //     if(isset($_SESSION['token'])){
-            //         echo "value='" . $_SESSION['token'] . "'";
-            //     }else{
-            //         echo "value='" . $_GET['token'] . "'";
-            //     }
-            // ?>
-        
-        type="hidden" name='token' /> -->
         <p class="form-group">
             <label>Email</label><br />
-            <input type="text" name="email" placeholder="Email" class="form-control" />
+            <input type="text" name="email" placeholder="Email" class="form-control" required />
+        </p>
+        <p>
+            <?php
+                if(isset($_SESSION['unAuthMsg'])){
+                    echo "<span style='color:green'>" . $_SESSION['unAuthMsg'] . "</span>";
+                }
+            ?>
         </p>
         <p class="form-group">
             <label>Enter New Password</label><br />
-            <input type="password" name="password" placeholder="Password" class="form-control" autocomplete="off"/>
+            <input type="password" name="password" placeholder="Password" class="form-control" autocomplete="off" required />
         </p>
         <p class="form-group">
             <label>Confirm Password</label><br />
-            <input type="password" name="password" placeholder="Password" class="form-control" autocomplete="off"/>
+            <input type="password" name="confirm-password" placeholder="Confirm Password" class="form-control" autocomplete="off" required />
+        </p>
+        <p>
+            <?php
+                if(isset($_SESSION['diffPassword'])){
+                    echo "<span style='color:green'>" . $_SESSION['diffPassword'] . "</span>";
+                }
+            ?>
         </p>
         <p>
             <button type="submit" class="form-control btn btn-danger">Change Password</button>
@@ -46,4 +48,8 @@
     </form>
 <?php 
     require_once('lib/footer.php');
+    unset($_SESSION['unAuthMsg']);
+    unset($_SESSION['diffPassword']);
+    unset($_SESSION["resetError"]);
+
 ?>

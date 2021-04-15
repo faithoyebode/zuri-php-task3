@@ -4,6 +4,14 @@
 
     $email = $_POST['email'] != "" ? $_POST['email'] : $errorCount++;
     $authorized = $_SESSION['email'] == $email ? true : $errorCount++; 
+    $password = $_POST['password'] != "" ? $_POST['password'] : $errorCount++;
+    $confirmPassword = $_POST['confirm-password'] != "" ? $_POST['confirm-password'] : $errorCount++;
+
+    if($password != $confirmPassword){
+        $errorCount++;
+        $_SESSION["diffPassword"] = "Passwords do not match";
+    }
+
 
     if($errorCount > 0){
         //If the email field is blank, show an error message and prevent any further action
@@ -12,16 +20,15 @@
             $session_error .= "s";
         }
         $session_error .= " in your form submission";
-        $_SESSION["error"] = $session_error;
+        $_SESSION["resetError"] = $session_error;
 
         //check if the loggedin email matches the e-mail the user provided to reset password
         if($unauthorized == false){
-            $_SESSION["unAuthMsg"] = "You are not authorized to change another user's password";
+            $_SESSION["unAuthMsg"] = "This e-mail is incorrect or unauthorized to perform this operation";
         }
         
         header("Location: ../reset-password.php");
     }else{
-        //If the email field is not blank, execute this block
         $allUsers = scandir("../db/users/");
         $countAllUsers = count($allUsers);
         for ($counter=0; $counter < $countAllUsers; $counter++){
@@ -29,6 +36,14 @@
             if($currentUser == $email . ".json"){ 
                 $userString=file_get_contents("../db/users/" . $currentUser);
                 $userObject = json_decode($userString);
+                $userObject->password = password_hash($password, PASSWORD_DEFAULT);
+
+                file_put_contents("../db/users/" . $email . ".json", json_encode($userObject));
+                unset($_SESSION['loggedIn']);
+                $_SESSION['resetToLoginMessage'] = "Password Reset Successful, you can now login! " . $first_name ;
+            
+                //redirect the user to login page when reset password is successful
+                header("Location: ../login.php");
             }
         }
         //If after goung through all the email records in the database, the user's email is not found
